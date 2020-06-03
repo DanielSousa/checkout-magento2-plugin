@@ -130,8 +130,6 @@ class TransactionHandlerService
      */
     public function handleTransaction($order, $webhook)
     {
-
-        sleep(60);
         // Check if a transaction aleady exists
         $transaction = $this->hasTransaction(
             $order,
@@ -161,7 +159,7 @@ class TransactionHandlerService
                 $transaction,
                 $amount
             );
-
+            sleep(60);
             // Process the invoice case
             $this->processInvoice($transaction, $amount);
         } else {
