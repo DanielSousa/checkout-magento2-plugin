@@ -131,7 +131,7 @@ class TransactionHandlerService
     public function handleTransaction($order, $webhook)
     {
 
-        sleep(3);
+        sleep(15);
         // Check if a transaction aleady exists
         $transaction = $this->hasTransaction(
             $order,
