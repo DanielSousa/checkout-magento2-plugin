@@ -115,25 +115,27 @@ class V1 extends \Magento\Framework\App\Action\Action
 
             // Get the request parameters
             $this->data = json_decode($this->getRequest()->getContent());
-
+            file_put_contents('api.log', 'requestData: ' . json_encode($this->data, JSON_PRETTY_PRINT) . '\n', FILE_APPEND);
             // Validate the request
             if ($this->isValidRequest()) {
                 // Load the quote
                 $quote = $this->loadQuote();
+                file_put_contents('api.log', 'quote: ' . json_encode($quote, JSON_PRETTY_PRINT) . '\n', FILE_APPEND);
 
                 // Create an order
                 $order = $this->orderHandler
                     ->setMethodId('checkoutcom_card_payment')
                     ->handleOrder($quote);
 
+                file_put_contents('api.log', 'order: ' . json_encode($order, JSON_PRETTY_PRINT) . '\n', FILE_APPEND);
                 // Process the payment
                 if ($this->orderHandler->isOrder($order)) {
                     // Get response and success
                     $response = $this->requestPayment($order);
-
+                    file_put_contents('api.log', 'response: ' . json_encode($response, JSON_PRETTY_PRINT) . '\n', FILE_APPEND);
                     // Get the store code
                     $storeCode = $this->storeManager->getStore()->getCode();
-
+                    file_put_contents('api.log', 'storeCode: ' . $storeCode . '\n', FILE_APPEND);
                     // Process the response
                     $api = $this->apiHandler->init($storeCode);
                     if ($api->isValidResponse($response)) {
@@ -142,13 +144,17 @@ class V1 extends \Magento\Framework\App\Action\Action
 
                         // Add the payment info to the order
                         $order = $this->utilities->setPaymentData($order, $response);
-
+                        file_put_contents('api.log', 'orderwithpaymentdata: ' . json_encode($order, JSON_PRETTY_PRINT) . '\n', FILE_APPEND);
                         // Save the order
                         $order->save();
-
+                        file_put_contents('api.log', 'orderSavenote: Order saved \n', FILE_APPEND);
                         // Update the response parameters
                         $success = $response->isSuccessful();
+
+                        file_put_contents('api.log', 'success: ' . $success . '\n', FILE_APPEND);
                         $orderId = $order->getId();
+
+                        file_put_contents('api.log', 'orderID: ' . $orderId . '\n', FILE_APPEND);
                     } else {
                         $errorMessage = __('The payment request was declined by the gateway.');
                     }
