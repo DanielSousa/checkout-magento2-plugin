@@ -163,7 +163,7 @@ class TransactionHandlerService
             );
 
             // Process the invoice case
-            $this->processInvoice($transaction, $amount);
+//            $this->processInvoice($transaction, $amount);
         } else {
             // Get the payment
             $payment = $transaction->getOrder()->getPayment();
