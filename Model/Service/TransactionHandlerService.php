@@ -159,7 +159,7 @@ class TransactionHandlerService
                 $transaction,
                 $amount
             );
-            sleep(60);
+            sleep(3);
             // Process the invoice case
             $this->processInvoice($transaction, $amount);
         } else {
